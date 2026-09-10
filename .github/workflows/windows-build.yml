@@ -1,0 +1,52 @@
+name: Build Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      # 1. Download repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Install Java
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      # 3. Make Gradle executable
+      - name: Make Gradle executable
+        shell: bash
+        run: chmod +x gradlew
+
+      # 4. Build the fat JAR
+      - name: Build JAR
+        run: ./gradlew desktop:dist
+
+      # 5. Build Windows installer
+      - name: Build Windows EXE
+        run: >
+          jpackage
+          --type exe
+          --name "Jungle Rush"
+          --input desktop/build/libs
+          --main-jar desktop-1.0.jar
+          --main-class com.junglerush.DesktopLauncher
+          --icon assets/Icons/JungleRush.ico
+          --dest build/windows
+
+      # 6. Upload the EXE
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: JUNGLE-RUSH-Windows
+          path: build/windows/*.exe
