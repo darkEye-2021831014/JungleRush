@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/Background/logoImage.png" alt="Jungle Rush logo" width="420"/>
+<img src="assets/Icons/JungleRush.png" alt="Jungle Rush logo" width="160"/>
 
 # Jungle Rush
 
